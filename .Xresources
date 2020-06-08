@@ -1,0 +1,79 @@
+#ifdef CUSTOM_RUN
+
+#ifdef IS_DESKTOP
+	#define FONTSIZE 8
+#elif IS_LAPTOP
+	#define FONTSIZE 7
+#else
+	#define FONTSIZE 7
+#endif
+
+
+! Terminal Colors
+*color0:  #000000
+*color1:  #ff2c4b
+*color2:  #aeee00
+*color3:  #fade3e
+*color4:  #0a9dff
+*color5:  #ff9eb8
+*color6:  #8cffba
+*color7:  #ffffff
+*color8:  #101010
+*color9:  #DE0020
+*color10:  #88BB00
+*color11:  #E5C405
+*color12:  #3DB1FE
+*color13:  #FF386D
+*color14:  #3FFF8C
+*color15:  #f0f0f0
+
+! URxvt things
+URxvt.perl-ext-common: default,font-size
+URxvt.keysym.C-Up:     font-size:increase
+URxvt.keysym.C-Down:   font-size:decrease
+URxvt.keysym.C-S-Up:   font-size:incglobal
+URxvt.keysym.C-S-Down: font-size:decglobal
+URxvt.keysym.C-equal:  font-size:reset
+URxvt.keysym.C-slash:  font-size:show
+
+URxvt.font:			xft:Droid Sans Mono:size=FONTSIZE
+URxvt.scrollBar:	false
+URxvt.background:	#141413
+URxvt.foreground:	#f8f6f2
+
+! rofi
+rofi.modi:			combi
+rofi.combi-modi:	window,drun,ssh
+rofi.terminal:		urxvtc
+rofi.ssh-client:	ssh
+rofi.ssh-command:	{terminal} -e "{ssh-client} {host}"
+rofi.opacity:		100
+rofi.fg:			#f8f6f2
+rofi.bg:			#141413
+rofi.color-normal:	#1c1b1a,  #f8f6f2,  #242321,  #35322d,  #d9cec3
+rofi.color-window:	#141413,	#1c1b1a
+rofi.levenshtein-sort:	true
+
+#ifdef IS_LAPTOP
+!
+! Sample X defaults for xcircuit, black-on-white version
+!
+	xcircuit*foreground: Black
+	xcircuit*background: White
+	xcircuit*gridcolor: Gray85
+	xcircuit*snapcolor: Orange
+	xcircuit*selectcolor: Blue
+	xcircuit*querycolor: Green
+	xcircuit*axescolor: NavajoWhite3
+	xcircuit*offbuttoncolor: Gray30
+	xcircuit*auxiliarycolor: MediumOrchid1
+#endif
+
+! Main things
+!*background:		#141413
+!*foreground:		#f8f6f2
+
+! Custom run
+#endif
+
+URxvt.background:	#141413

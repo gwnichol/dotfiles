@@ -1,0 +1,13 @@
+[[ -f "~/.profile" ]] && source ~/.profile
+
+# [[ -n "$IS_DESKTOP" ]] && compton -b
+
+if [ -n "$IS_DESKTOP" ]; then
+	xrdb_args="-DIS_DESKTOP"
+elif [[ -n "$IS_LAPTOP" ]]; then
+	xrdb_args="-DIS_LAPTOP"
+fi
+
+xrdb -merge -DCUSTOM_RUN $xrdb_args ~/.Xresources
+
+urxvtd -q -o -f
