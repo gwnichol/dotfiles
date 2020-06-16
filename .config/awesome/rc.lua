@@ -135,7 +135,6 @@ end
 -- }}}
 -- {{{ Wibar 
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -229,7 +228,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
-
+			
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
 
@@ -241,6 +240,10 @@ awful.screen.connect_for_each_screen(function(s)
 	local net_wireless = net_widgets.wireless({interface="wlo1"})
 
 	local nice_spacer = wibox.widget.textbox(" | ")
+
+	local mytextclock = wibox.widget.textclock()
+	local month_calendar = awful.widget.calendar_popup.month()
+	month_calendar:attach( mytextclock, "tr" )
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -255,10 +258,10 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
-			net_wireless,
-			nice_spacer,
-			BAT0,
-			nice_spacer,
+			(function() if os.getenv("IS_LAPTOP") then return net_wireless end end)(),
+			(function() if os.getenv("IS_LAPTOP") then return nice_spacer end end)(),
+			(function() if os.getenv("IS_LAPTOP") then return BAT0 end end)(),
+			(function() if os.getenv("IS_LAPTOP") then return nice_spacer end end)(),
             mytextclock,
             s.mylayoutbox,
         },
