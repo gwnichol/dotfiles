@@ -241,7 +241,7 @@ awful.screen.connect_for_each_screen(function(s)
 
 	local nice_spacer = wibox.widget.textbox(" | ")
 
-	local mytextclock = wibox.widget.textclock()
+	local mytextclock = wibox.widget.textclock("%I:%M %p", 60)
 	local month_calendar = awful.widget.calendar_popup.month()
 	month_calendar:attach( mytextclock, "tr" )
 

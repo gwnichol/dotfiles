@@ -87,7 +87,7 @@ nnoremap <leader>tu :GundoToggle<cr>
 " }}}
 " ALE {{{
 
-let g:ale_linters = {'c': []}
+let g:ale_linters = {'c': [], 'cpp': []}
 
 " }}}
 " }}}
@@ -228,6 +228,15 @@ autocmd FileType asm call Assembly_config()
 " CS {{{
 autocmd FileType cs call CS_config()
 	function CS_config()
+		setlocal tabstop=4
+		setlocal expandtab
+		setlocal shiftwidth=4
+		setlocal smarttab
+	endfunction
+" }}}
+" C {{{
+autocmd FileType c,cpp call C_config()
+	function C_config()
 		setlocal tabstop=4
 		setlocal expandtab
 		setlocal shiftwidth=4
