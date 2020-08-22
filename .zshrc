@@ -61,5 +61,5 @@ alias term='urxvtc -cd $(pwd)'
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 #[ -n "$FBTERM" ] && export TERM
-[[ "$TERM" == "linux" ]] &&  fbterm -- tmux
+[[ -n "$ISLAPTOP" ]] && [[ "$TERM" == "linux" ]] &&  fbterm -- tmux
 [[ "$TERM" == "rxvt-unicode-256color" ]] && export TERM=xterm-256color
