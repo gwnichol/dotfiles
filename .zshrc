@@ -21,36 +21,37 @@ compinit
 autoload -Uz promptinit
 promptinit
 
+autoload -Uz vcs_info
+
 ## BEGIN Prompt Setup 
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' formats '%b'
+
+precmd() { vcs_info }
 
 bat_filename=/sys/class/power_supply/BAT0/capacity
 
 setopt PROMPT_SUBST
+bat_text=
 if [ -f $bat_filename ]
 then
-	if [ $TERM = "screen-256color" ] || [ $TERM = "rxvt-unicode-256color" ]
+	if [ $(tput colors) = 256 ]
 	then
-	PROMPT='
-BAT: $(cat $bat_filename | awk '\''{ if ( $1 > 50 ) { print "%F{154}"$1"%f" } else if ( $1 > 20 ){ print "%F{121}"$1"%f" } else { print "%F{196}"$1"%f" } }'\'') ($(cat $bat_filename))| TIME:%F{214m}%t%f
-%F{196}%n%f@%F{154}%m%f %F{211}%~%f
-%F{137}>%f '
+		bat_text='BAT: $(cat $bat_filename | awk '\''{ if ( $1 > 50 ) { print "%F{154}"$1"%f" } else if ( $1 > 20 ){ print "%F{121}"$1"%f" } else { print "%F{196}"$1"%f" } }'\'') '
 	else
-	PROMPT='
-BAT : $(cat $bat_filename) | TIME: %t 
-%n@%m %~ > '
+	    bat_text='BAT : $(cat $bat_filename) '
 	fi
-else
-	if [ $TERM = "screen-256color" ] || [ $TERM = "rxvt-unicode-256color" ]
-	then
-	PROMPT='
-TIME:%F{214m}%t%f
-%F{196}%n%f@%F{154}%m%f %F{211}%~%f
+fi
+
+if [ $(tput colors) = 256 ]
+then
+	PROMPT="
+$bat_text"'%F{196}%n%f@%F{154}%m%f %F{211}%~ %F{165}${vcs_info_msg_0_}%f
 %F{137}>%f '
 	else
 	PROMPT='
 TIME: %t 
 %n@%m %~ > '
-	fi
 fi
 
 ## END Prompt Setup
@@ -60,6 +61,4 @@ alias veracrypt="veracrypt -t"
 alias term='urxvtc -cd $(pwd)'
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-#[ -n "$FBTERM" ] && export TERM
 [[ -n "$ISLAPTOP" ]] && [[ "$TERM" == "linux" ]] &&  fbterm -- tmux
-[[ "$TERM" == "rxvt-unicode-256color" ]] && export TERM=xterm-256color

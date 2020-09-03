@@ -310,32 +310,20 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
 
-    awful.key({ modkey,           }, "j",
-        function ()
-            awful.client.focus.byidx( 1)
-        end,
-        {description = "focus next by index", group = "client"}
-    ),
-    awful.key({ modkey,           }, "k",
-        function ()
-            awful.client.focus.byidx(-1)
-        end,
-        {description = "focus previous by index", group = "client"}
-    ),
     awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
--- Change client focus
-    awful.key({ modkey, "Control" }, "j", function () awful.client.focus.bydirection("down") end,
+	-- Change client focus
+    awful.key({ modkey,           }, "j", function () awful.client.focus.byidx( 1) end,
+        {description = "focus next by index", group = "client"}),
+    awful.key({ modkey,           }, "k", function () awful.client.focus.byidx(-1) end,
+        {description = "focus previous by index", group = "client"}),
+
+	-- Change screen focus
+    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative(1) end,
               {description = "focus client below", group = "client"}),
-    awful.key({ modkey, "Control" }, "k", function () awful.client.focus.bydirection("up") end,
+    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end,
               {description = "focus client above", group = "client"}),
-    awful.key({ modkey, "Control" }, "h", function () awful.client.focus.bydirection("left") end,
-              {description = "focus client left", group = "client"}),
-    awful.key({ modkey, "Control" }, "l", function () awful.client.focus.bydirection("right") end,
-              {description = "focus client right", group = "client"}),
-
-
 
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end,
