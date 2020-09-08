@@ -60,5 +60,6 @@ alias ls=exa
 alias veracrypt="veracrypt -t"
 alias term='urxvtc -cd $(pwd)'
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias clip='xclip -selection c'
 
 [[ -n "$ISLAPTOP" ]] && [[ "$TERM" == "linux" ]] &&  fbterm -- tmux
