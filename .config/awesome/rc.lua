@@ -241,8 +241,9 @@ awful.screen.connect_for_each_screen(function(s)
 
 	local nice_spacer = wibox.widget.textbox(" | ")
 
-	local mytextclock = wibox.widget.textclock("%I:%M %p", 60)
-	local month_calendar = awful.widget.calendar_popup.month()
+	local mytextclock = wibox.widget.textclock("%m-%d %I:%M %p", 60)
+	local month_calendar = awful.widget.calendar_popup.month({start_sunday = true})
+															 -- screen = awful.screen.focused()})
 	month_calendar:attach( mytextclock, "tr" )
 
     -- Add widgets to the wibox
@@ -294,6 +295,9 @@ globalkeys = gears.table.join(
 		      {description = "Go to next track", group = "function"}),
     awful.key({ }, "XF86AudioPlay", function () awful.spawn("playerctl play-pause") end,
 		      {description = "Play/Pause", group = "function"}),
+	awful.key({ }, "XF86Calculator", function () awful.spawn("galculator") end,
+		      {description = "Calculator", group = "function"}),
+
 
 -- }}}
 
@@ -517,6 +521,8 @@ root.keys(globalkeys)
 -- }}}
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
+
+-- Use "xprop" to find properties of an x window
 awful.rules.rules = {
     -- All clients will match this rule.
     { rule = { },
@@ -567,7 +573,10 @@ awful.rules.rules = {
 	{ rule = { class = "octave-gui" },
 		except = { name = "Octave" },
 		properties = { floating = true }
-}
+	},
+	{ rule = { name = "galculator" },
+		properties = { floating = true, ontop = true }
+	}
 
 
     -- Set Firefox to always map on the tag named "2" on screen 1.

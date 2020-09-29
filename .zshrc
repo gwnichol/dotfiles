@@ -25,7 +25,7 @@ autoload -Uz vcs_info
 
 ## BEGIN Prompt Setup 
 zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:git:*' formats '%b'
+zstyle ':vcs_info:git:*' formats '%r/%S:%b'
 
 precmd() { vcs_info }
 
@@ -61,5 +61,7 @@ alias veracrypt="veracrypt -t"
 alias term='urxvtc -cd $(pwd)'
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias clip='xclip -selection c'
+alias please='sudo'
+cdls() { cd "$@" && ls; }
 
 [[ -n "$ISLAPTOP" ]] && [[ "$TERM" == "linux" ]] &&  fbterm -- tmux
