@@ -4,3 +4,6 @@
 [submodule ".config/awesome/battery-widget"]
 	path = .config/awesome/battery-widget
 	url = https://github.com/deficient/battery-widget.git
+[submodule ".config/awesome/notif-center"]
+	path = .config/awesome/notif-center
+	url = https://github.com/gwnichol/notif-center.git
