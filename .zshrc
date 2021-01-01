@@ -54,6 +54,12 @@ TIME: %t
 %n@%m %~ > '
 fi
 
+function shot() {
+	name="/tmp/shot-$(date +%Y-%m-%d-%H-%M).png"
+	maim -s $name
+	echo Written to $name
+}
+
 ## END Prompt Setup
 
 alias ls=exa
@@ -62,6 +68,7 @@ alias term='urxvtc -cd $(pwd)'
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias clip='xclip -selection c'
 alias please='sudo'
+alias ip='ip -brief -color'
 cdls() { cd "$@" && ls; }
 
 [[ -n "$ISLAPTOP" ]] && [[ "$TERM" == "linux" ]] &&  fbterm -- tmux
