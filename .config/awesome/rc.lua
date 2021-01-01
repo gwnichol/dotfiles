@@ -259,6 +259,7 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
+			--require("notif-center"),
 			(function() if os.getenv("IS_LAPTOP") then return net_wireless end end)(),
 			(function() if os.getenv("IS_LAPTOP") then return nice_spacer end end)(),
 			(function() if os.getenv("IS_LAPTOP") then return BAT0 end end)(),
