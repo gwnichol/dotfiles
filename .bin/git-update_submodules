@@ -1,0 +1,16 @@
+#!/bin/sh
+
+source "$(git --exec-path)/git-sh-setup"
+
+USAGE=""
+
+function _update_submodules() {
+    if [[ $# == 0 ]]; then
+		git submodule update --init --recursive
+		git submodule update --remote --recursive
+    else
+        usage
+    fi  
+}
+
+_update_submodules ${@}
