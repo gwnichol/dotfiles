@@ -92,16 +92,48 @@ end
 
 -- Flip to and from float
 local function layout_float_toggle_fn()
-	local return_layout = nil
-	return function ()
-		if not return_layout then
-			return_layout = awful.layout.get_tag_layout_index(mouse.screen.selected_tag)
-			awful.layout.set(awful.layout.suit.floating)
-		else
-			awful.layout.set(awful.layout.layouts[return_layout])
-			return_layout = nil
-		end
-	end
+    local return_layout = nil
+    return function ()
+        if not return_layout then
+            return_layout = awful.layout.get_tag_layout_index(mouse.screen.selected_tag)
+            awful.layout.set(awful.layout.suit.floating)
+        else
+            awful.layout.set(awful.layout.layouts[return_layout])
+            return_layout = nil
+        end
+    end
+end
+
+-- Set the volume on default
+local function set_volume(volume)
+    awful.spawn.easy_async_with_shell("pactl info | awk '/Default Sink/ {print $3}'", function(default_sink)
+        default_sink = default_sink:gsub("[\r\n]+","")
+        awful.spawn.with_shell("pactl set-sink-volume " .. default_sink .. " " .. volume)
+        awful.spawn.easy_async_with_shell("pactl info | awk '/Default Sink/ {print $3}'", function(actual_volume)
+            actual_volume = actual_volume:gsub("[\r\n]+","")
+--          popup = awful.popup {
+--              widget = {
+--                  {
+--                      text   = default_sink .. "\n" .. actual_volume,
+--                      widget = wibox.widget.textbox
+--                  },
+--                  margins = 10,
+--                  widget = wibox.container.margin
+--              },
+--              placement    = awful.placement.top_right,
+--              shape        = gears.shape.rounded_rect,
+--              visible      = true,
+--          }
+--          
+--          gears.timer {
+--              timeout = 2,
+--              autostart = true,
+--              single_shot = true,
+--              callback = function() popup.visible = false end,
+--          }
+
+        end)
+    end)
 end
 -- }}}
 -- {{{ Menu
@@ -126,12 +158,14 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
  -- }}}
 -- {{{ Naughty Config
+
 naughty.config.notify_callback = function(args)
 	if args.icon then
 		args.icon_size = 50
-	end	
+	end 
 	return args
 end
+
 -- }}}
 -- {{{ Wibar 
 -- Create a textclock widget
@@ -198,18 +232,18 @@ awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
-	local names = { "_terminal_", "_programing_", "_browser_", "4", "5", "6", "7", "8", "9" }
-	local l = awful.layout.suit  -- Just to save some typing: use an alias.
-	local layouts = { l.tile,
-					l.tile,
-					l.tile, 
-					l.tile, 
-					l.tile,
-					l.tile, 
-					l.tile, 
-					l.tile, 
-					l.tile }
-	awful.tag(names, s, layouts)
+    local names = { "_terminal_", "_programing_", "_browser_", "4", "5", "6", "7", "8", "9" }
+    local l = awful.layout.suit  -- Just to save some typing: use an alias.
+    local layouts = { l.tile,
+                    l.tile,
+                    l.tile, 
+                    l.tile, 
+                    l.tile,
+                    l.tile, 
+                    l.tile, 
+                    l.tile, 
+                    l.tile }
+    awful.tag(names, s, layouts)
 
     -- Each screen has its own tag table.
 
@@ -228,23 +262,23 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
-			
+            
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
 
-	-- Add any widget code needed
-	local battery_widget = require("battery-widget")
-	local BAT0 = battery_widget { adapter = "BAT0", ac = "AC" }
+    -- Add any widget code needed
+    local battery_widget = require("battery-widget")
+    local BAT0 = battery_widget { adapter = "BAT0", ac = "AC" }
 
-	local net_widgets = require("net_widgets")
-	local net_wireless = net_widgets.wireless({interface="wlo1"})
+    local net_widgets = require("net_widgets")
+    local net_wireless = net_widgets.wireless({interface="wlo1"})
 
-	local nice_spacer = wibox.widget.textbox(" | ")
+    local nice_spacer = wibox.widget.textbox(" | ")
 
-	local mytextclock = wibox.widget.textclock("%m-%d %I:%M %p", 60)
-	local month_calendar = awful.widget.calendar_popup.month({start_sunday = true})
-															 -- screen = awful.screen.focused()})
-	month_calendar:attach( mytextclock, "tr" )
+    local mytextclock = wibox.widget.textclock("%m-%d %I:%M %p", 60)
+    local month_calendar = awful.widget.calendar_popup.month({start_sunday = true})
+                                                             -- screen = awful.screen.focused()})
+    month_calendar:attach( mytextclock, "tr" )
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -259,11 +293,11 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
-			--require("notif-center"),
-			(function() if os.getenv("IS_LAPTOP") then return net_wireless end end)(),
-			(function() if os.getenv("IS_LAPTOP") then return nice_spacer end end)(),
-			(function() if os.getenv("IS_LAPTOP") then return BAT0 end end)(),
-			(function() if os.getenv("IS_LAPTOP") then return nice_spacer end end)(),
+            --require("notif-center"),
+            (function() if os.getenv("IS_LAPTOP") then return net_wireless end end)(),
+            (function() if os.getenv("IS_LAPTOP") then return nice_spacer end end)(),
+            (function() if os.getenv("IS_LAPTOP") then return BAT0 end end)(),
+            (function() if os.getenv("IS_LAPTOP") then return nice_spacer end end)(),
             mytextclock,
             s.mylayoutbox,
         },
@@ -280,33 +314,33 @@ root.buttons(gears.table.join(
 -- {{{ Key bindings
 globalkeys = gears.table.join(
 -- {{{ Function Keys
-    awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn(os.getenv("HOME") .. "/.bin/brightness down") end,
-		      {description = "Turn the brightness down 10%", group = "function"}),				
+    awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn(OS.GETENV("home") .. "/.bin/brightness down") end,
+              {description = "Turn the brightness down 10%", group = "function"}),              
     awful.key({ }, "XF86MonBrightnessUp", function () awful.spawn(os.getenv("HOME") .. "/.bin/brightness up") end,
-		      {description = "Turn the brightness up 10%", group = "function"}),
+              {description = "Turn the brightness up 10%", group = "function"}),
     awful.key({ }, "XF86AudioMute", function () awful.spawn.with_shell("pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle") end,
-		      {description = "Mute audio", group = "function"}),
-    awful.key({ }, "XF86AudioLowerVolume", function () awful.spawn.with_shell("pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') -10%") end,
-		      {description = "Volume -10%", group = "function"}),
-    awful.key({ }, "XF86AudioRaiseVolume", function () awful.spawn.with_shell("pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') +10%") end,
-		      {description = "Volume +10%", group = "function"}),
-	awful.key({ }, "XF86AudioPrev", function () awful.spawn("playerctl previous") end,
-		      {description = "Go to previous track", group = "function"}),
+              {description = "Mute audio", group = "function"}),
+    awful.key({ }, "XF86AudioLowerVolume", function () set_volume("-2%") end,
+              {description = "Volume -2%", group = "function"}),
+    awful.key({ }, "XF86AudioRaiseVolume", function () set_volume("+2%") end,
+              {description = "Volume +2%", group = "function"}),
+    awful.key({ }, "XF86AudioPrev", function () awful.spawn("playerctl previous") end,
+              {description = "Go to previous track", group = "function"}),
     awful.key({ }, "XF86AudioNext", function () awful.spawn("playerctl next") end,
-		      {description = "Go to next track", group = "function"}),
+              {description = "Go to next track", group = "function"}),
     awful.key({ }, "XF86AudioPlay", function () awful.spawn("playerctl play-pause") end,
-		      {description = "Play/Pause", group = "function"}),
-	awful.key({ }, "XF86Calculator", function () awful.spawn("galculator") end,
-		      {description = "Calculator", group = "function"}),
+              {description = "Play/Pause", group = "function"}),
+    awful.key({ }, "XF86Calculator", function () awful.spawn("galculator") end,
+              {description = "Calculator", group = "function"}),
 
 
 -- }}}
 
 
-	awful.key({ modkey,           }, "d", function () awful.spawn("rofi -show combi") end,
+    awful.key({ modkey,           }, "d", function () awful.spawn("rofi -show combi") end,
               {description = "open a terminal", group = "launcher"}),
 
-	awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
+    awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description="show help", group="awesome"}),
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
               {description = "view previous", group = "tag"}),
@@ -318,13 +352,13 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
-	-- Change client focus
+    -- Change client focus
     awful.key({ modkey,           }, "j", function () awful.client.focus.byidx( 1) end,
         {description = "focus next by index", group = "client"}),
     awful.key({ modkey,           }, "k", function () awful.client.focus.byidx(-1) end,
         {description = "focus previous by index", group = "client"}),
 
-	-- Change screen focus
+    -- Change screen focus
     awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative(1) end,
               {description = "focus client below", group = "client"}),
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end,
@@ -339,22 +373,22 @@ globalkeys = gears.table.join(
               {description = "jump to urgent client", group = "client"}),
     awful.key({ modkey,           }, "Tab",
         function ()
-			
+            
             if client.focus then
                 client.focus:raise()
             end
         end,
         {description = "go back", group = "client"}),
-	awful.key({ modkey, "Shift",  }, "r",
+    awful.key({ modkey, "Shift",  }, "r",
         function ()
             awful.prompt.run {
-			prompt       = "rename current tag: ",
+            prompt       = "rename current tag: ",
             text         = awful.tag.selected().name,
-			textbox      = awful.screen.focused().mypromptbox.widget,
+            textbox      = awful.screen.focused().mypromptbox.widget,
             exe_callback = function (s) awful.tag.selected().name = s end,
         }
         end,
-			{description = "rename tag", group = "awesome"}),
+            {description = "rename tag", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "f", layout_float_toggle_fn(),
               {description = "toggle float", group = "client"}),
  
@@ -398,8 +432,8 @@ globalkeys = gears.table.join(
     -- Prompt
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
               {description = "run prompt", group = "launcher"}),
-	awful.key({ modkey, "Shift"}, "s", function () awful.spawn("dm-tool lock") end,
-			  {description = "lock screen", group = "launcher"}),
+    awful.key({ modkey, "Shift"}, "s", function () awful.spawn("dm-tool lock") end,
+              {description = "lock screen", group = "launcher"}),
 
     awful.key({ modkey }, "x",
               function ()
@@ -458,8 +492,8 @@ clientkeys = gears.table.join(
             c:raise()
         end ,
         {description = "(un)maximize horizontally", group = "client"}),
-	awful.key({ modkey,}, "e", function () awful.screen.focus_relative(1) end,
-		{description = "focus next screen", group = "client"})
+    awful.key({ modkey,}, "e", function () awful.screen.focus_relative(1) end,
+        {description = "focus next screen", group = "client"})
 )
 
 -- Bind all key numbers to tags.
@@ -535,8 +569,8 @@ awful.rules.rules = {
                      buttons = clientbuttons,
                      screen = awful.screen.preferred,
                      placement = awful.placement.no_overlap+awful.placement.no_offscreen,
-					size_hints_honor = false
-		}
+                    size_hints_honor = false
+        }
     },
 
     -- Floating clients.
@@ -569,15 +603,15 @@ awful.rules.rules = {
     { rule_any = {type = { "normal", "dialog" }
       }, properties = { titlebars_enabled = true }
     },
-	{ rule = { class = "RocketLeague" }, 
-		properties = { fullscreen = true } },
-	{ rule = { class = "octave-gui" },
-		except = { name = "Octave" },
-		properties = { floating = true }
-	},
-	{ rule = { name = "galculator" },
-		properties = { floating = true, ontop = true }
-	}
+    { rule = { class = "RocketLeague" }, 
+        properties = { fullscreen = true } },
+    { rule = { class = "octave-gui" },
+        except = { name = "Octave" },
+        properties = { floating = true }
+    },
+    { rule = { name = "galculator" },
+        properties = { floating = true, ontop = true }
+    }
 
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
@@ -656,10 +690,10 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Auto Start
 
 if os.getenv("IS_DESKTOP") then
-	awful.spawn.once('redshift-gtk')
+	awful.spawn.with_shell("ps cax | grep redshift || redshift-gtk")
 else if os.getenv("IS_LAPTOP") then
-	awful.spawn.single_instance("nm-applet")
-	end
+    awful.spawn.single_instance("nm-applet")
+    end
 end
 
 -- vim: foldmethod=marker foldlevel=0 

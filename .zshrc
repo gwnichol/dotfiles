@@ -69,6 +69,10 @@ alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias clip='xclip -selection c'
 alias please='sudo'
 alias ip='ip -brief -color'
+alias grep='grep --color=auto'
 cdls() { cd "$@" && ls; }
 
 [[ -n "$ISLAPTOP" ]] && [[ "$TERM" == "linux" ]] &&  fbterm -- tmux
+
+# Source an optional environment
+[[ -n "$ZSH_SOURCE_ENV" ]] && source $ZSH_SOURCE_ENV

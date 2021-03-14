@@ -4,8 +4,10 @@
 	#define FONTSIZE 8
 #elif IS_LAPTOP
 	#define FONTSIZE 7
+#elif IS_GENTOO
+	#define FONTSIZE 8
 #else
-	#define FONTSIZE 7
+	#define FONTSIZE 8
 #endif
 
 
@@ -27,6 +29,14 @@
 *color14:  #3FFF8C
 *color15:  #f0f0f0
 
+! Xft font settings
+Xft.dpi:		100
+Xft.antialias:	true
+Xft.hinting:	true
+Xft.hintstyle:	hintslight
+Xft.autohint:	false
+Xft.lcdfilter:	lcddefault
+
 ! URxvt things
 URxvt.perl-ext-common: default,font-size
 URxvt.keysym.C-Up:     font-size:increase
@@ -35,8 +45,8 @@ URxvt.keysym.C-S-Up:   font-size:incglobal
 URxvt.keysym.C-S-Down: font-size:decglobal
 URxvt.keysym.C-equal:  font-size:reset
 URxvt.keysym.C-slash:  font-size:show
+URxvt.font:			xft:Droid Sans Mono:size=FONTSIZE:antialias=true, xft:Noto Emoji:size=FONTSIZE:antialias=true
 
-URxvt.font:			xft:Droid Sans Mono:size=FONTSIZE
 URxvt.scrollBar:	false
 URxvt.background:	#141413
 URxvt.foreground:	#f8f6f2
@@ -75,5 +85,3 @@ rofi.levenshtein-sort:	true
 
 ! Custom run
 #endif
-
-URxvt.background:	#141413

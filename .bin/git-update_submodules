@@ -6,8 +6,8 @@ USAGE=""
 
 function _update_submodules() {
     if [[ $# == 0 ]]; then
-		git submodule update --init --recursive
-		git submodule update --remote --recursive
+		git submodule update --init --recursive --remote
+		git submodule foreach --recursive "git checkout master; git pull"
     else
         usage
     fi  
