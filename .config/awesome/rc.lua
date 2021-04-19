@@ -104,35 +104,14 @@ local function layout_float_toggle_fn()
     end
 end
 
+local volume_widget = require("volume-widget")
+
 -- Set the volume on default
 local function set_volume(volume)
     awful.spawn.easy_async_with_shell("pactl info | awk '/Default Sink/ {print $3}'", function(default_sink)
         default_sink = default_sink:gsub("[\r\n]+","")
         awful.spawn.with_shell("pactl set-sink-volume " .. default_sink .. " " .. volume)
-        awful.spawn.easy_async_with_shell("pactl info | awk '/Default Sink/ {print $3}'", function(actual_volume)
-            actual_volume = actual_volume:gsub("[\r\n]+","")
---          popup = awful.popup {
---              widget = {
---                  {
---                      text   = default_sink .. "\n" .. actual_volume,
---                      widget = wibox.widget.textbox
---                  },
---                  margins = 10,
---                  widget = wibox.container.margin
---              },
---              placement    = awful.placement.top_right,
---              shape        = gears.shape.rounded_rect,
---              visible      = true,
---          }
---          
---          gears.timer {
---              timeout = 2,
---              autostart = true,
---              single_shot = true,
---              callback = function() popup.visible = false end,
---          }
-
-        end)
+		volume_widget.update_volume()
     end)
 end
 -- }}}
@@ -232,7 +211,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
-    local names = { "_terminal_", "_programing_", "_browser_", "4", "5", "6", "7", "8", "9" }
+    local names = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
     local l = awful.layout.suit  -- Just to save some typing: use an alias.
     local layouts = { l.tile,
                     l.tile,
@@ -293,6 +272,8 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
+			volume_widget.widget,
+			nice_spacer,
             --require("notif-center"),
             (function() if os.getenv("IS_LAPTOP") then return net_wireless end end)(),
             (function() if os.getenv("IS_LAPTOP") then return nice_spacer end end)(),
@@ -318,7 +299,8 @@ globalkeys = gears.table.join(
               {description = "Turn the brightness down 10%", group = "function"}),              
     awful.key({ }, "XF86MonBrightnessUp", function () awful.spawn(os.getenv("HOME") .. "/.bin/brightness up") end,
               {description = "Turn the brightness up 10%", group = "function"}),
-    awful.key({ }, "XF86AudioMute", function () awful.spawn.with_shell("pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle") end,
+    awful.key({ }, "XF86AudioMute", function () awful.spawn.with_shell("pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle")
+	volume_widget.update_volume() end,
               {description = "Mute audio", group = "function"}),
     awful.key({ }, "XF86AudioLowerVolume", function () set_volume("-2%") end,
               {description = "Volume -2%", group = "function"}),
