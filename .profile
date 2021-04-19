@@ -18,10 +18,5 @@ elif [[ -n "$IS_LAPTOP" ]]; then
 	export LIBVIRT_DEFAULT_URI="qemu+ssh://DESKTOP/system"
 fi
 
-if [[ -n "$SSH_TTY" ]]; then
-	# Is SSH Client
-	export GPG_TTY=$SSH_TTY
-fi
-
 export EDITOR=vim
 export PATH="$HOME/.local/bin:$HOME/.gem/ruby/2.6.0/bin:$HOME/.gem/ruby/2.5.0/bin:$HOME/.bin:/usr/local/sbin/:$PATH"

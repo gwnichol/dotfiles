@@ -60,6 +60,8 @@ function shot() {
 	echo Written to $name
 }
 
+export GPG_TTY=$(tty)
+
 ## END Prompt Setup
 
 alias ls=exa
@@ -67,9 +69,19 @@ alias veracrypt="veracrypt -t"
 alias term='urxvtc -cd $(pwd)'
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias clip='xclip -selection c'
-alias please='sudo'
 alias ip='ip -brief -color'
 alias grep='grep --color=auto'
+
+# Space at end means keep aliasing
+alias sudo='sudo '
+alias please='sudo '
+
+# Safety
+alias mv='mv -i'
+alias cp='cp -i'
+alias rm='rm -i'
+alias cd='pushd'
+
 cdls() { cd "$@" && ls; }
 
 [[ -n "$ISLAPTOP" ]] && [[ "$TERM" == "linux" ]] &&  fbterm -- tmux
